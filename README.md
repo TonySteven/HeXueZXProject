@@ -11,7 +11,7 @@
 需求背景
 1. 实现网页版自动刷课功能
 
-需求设计
+设计思路
 
 1、通过seleniumn模拟点击动作.(简单安全)
 
@@ -29,7 +29,11 @@
 
 mac: 执行 `brew install chromedriver` 即可
 
-#### 2. 安装 python3.8 自行百度,如果环境不是Python3.8,则执行 `pip install selenium` 即可
+#### 2. 安装 python3.8环境(自行百度)
+
+如果环境不是Python3.8,则需自行搭建selenium环境
+
+执行 `pip install selenium` 即可
 
 ##### 2.1 用项目中venv虚拟环境即可.
 
