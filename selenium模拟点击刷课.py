@@ -174,6 +174,10 @@ def watch_course_loop():
 
             # 等待页面加载
             time.sleep(3)
+
+            # 点下静音键
+            driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button').click()
+
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
             while video_end_time_str == '':
