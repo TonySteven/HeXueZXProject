@@ -162,7 +162,7 @@ def watch_course_loop():
 
     """
 
-    driver.switch_to.window(driver.window_handles[-1])
+    driver.switch_to.window(driver.window_handles[0])
 
     # 等待页面跳转
     global delay_time
@@ -174,27 +174,32 @@ def watch_course_loop():
 
             # 等待页面加载
             time.sleep(3)
-
+            video_end_time_str = driver.find_element(by=By.XPATH,
+                                                     value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
+            while video_end_time_str == '':
+                time.sleep(3)
+                video_end_time_str = driver.find_element(by=By.XPATH,
+                                                         value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
             # 获取视频时长
-            video_end_time = t2s(
-                driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text)
+            video_end_time = t2s(video_end_time_str)
 
             # 获取现在已观看时长
-            video_time = t2s(
-                driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[2]/span[2]').text)
+            video_time_str = driver.find_element(by=By.XPATH,
+                                                 value='//*[@id="vjs_video_3"]/div[4]/div[2]/span[2]').text
+            while video_time_str == '':
+                time.sleep(3)
+                video_time_str = driver.find_element(by=By.XPATH,
+                                                     value='//*[@id="vjs_video_3"]/div[4]/div[2]/span[2]').text
 
-            if video_end_time != '' & video_time != '':
-                # 等待视频观看完成
-                delay_time = (video_end_time - video_time) + 6
-            else:
-                print('视频时长为空,已观看时长为空')
-                print('默认延迟30分钟')
-                delay_time = 30 * 60
+            # 获取现在已观看时长
+            video_time = t2s(video_time_str)
 
-            # time.sleep(delay_time)
-            time.sleep(3)
+            delay_time = int(int(video_end_time) - int(video_time)) + 6
+
             print('等待' + str(delay_time) + '秒')
+            time.sleep(delay_time)
             print('正在等待....')
+            # time.sleep(3)
         else:
             print('获取视频时长获取失败!')
             time.sleep(3)
@@ -214,6 +219,10 @@ def watch_course_loop():
     # 点击继续学习
     driver.find_element(by=By.XPATH,
                         value='//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div').click()
+
+    driver.close()
+    # 等待页面跳转
+    time.sleep(3)
 
 
 # 调用登陆函数
