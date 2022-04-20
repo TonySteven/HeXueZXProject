@@ -173,9 +173,14 @@ def watch_course_loop():
         if check_exists_by_xpath('//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]'):
 
             # 聚焦下video,更好的获取视频时长.
-            driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
+            # driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
+
             # 等待页面加载
             time.sleep(3)
+
+            # 点下静音键
+            driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button').click()
+
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
             while video_end_time_str == '':
@@ -228,7 +233,7 @@ def watch_course_loop():
 
 
 # 调用登陆函数
-login('学号', '密码')
+login('221100901130011', '050211')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
 watch_course('2')
