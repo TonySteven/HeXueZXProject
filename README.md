@@ -35,7 +35,13 @@ mac: 执行 `brew install chromedriver` 即可
 
 ![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1gbzstoygj211x0u0jua.jpg)
 
-#### 3. 选择文件运行即可.
+#### 3.配置并选择文件运行即可.
+
+##### 3.1 配置
+
+![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1gcbsd0xyj21210u041x.jpg)
+
+##### 3.2 运行
 
 ![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1gc4gbbjuj20u01nnadb.jpg)
 
