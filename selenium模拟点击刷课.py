@@ -172,20 +172,6 @@ def watch_course_loop():
     if check_exists_by_tag_name('video'):
         if check_exists_by_xpath('//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]'):
 
-            # 聚焦下video,更好的获取视频时长.
-            # driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
-
-            # 等待直到可以点击视频时长按钮
-            wait = WebDriverWait(driver, 120)
-            button_video = wait.until(
-                ec.element_to_be_clickable((By.XPATH, '//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]')))
-            button_video.click()
-            print('点击视频时长按钮')
-
-            # 点下静音键
-            driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button').click()
-            print('点击静音按钮')
-
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
             while video_end_time_str == '':
