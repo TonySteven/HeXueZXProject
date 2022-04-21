@@ -216,7 +216,7 @@ def watch_course_loop():
             # driver.implicitly_wait(delay_time)
             # driver.implicitly_wait(6)
             print('正在等待....')
-            asyncio.run(delay_exit_leaning(6))
+            asyncio.run(delay_exit_leaning(delay_time))
             # time.sleep(3)
         else:
             print('获取视频时长获取失败!')
