@@ -222,12 +222,6 @@ def watch_course_loop():
             print('获取视频时长获取失败!')
             time.sleep(3)
 
-    # 点击继续学习
-    driver.find_element(by=By.XPATH,
-                        value='//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div').click()
-
-    driver.close()
-
 
 async def delay_exit_leaning(delay_second):
     """
@@ -247,6 +241,17 @@ async def delay_exit_leaning(delay_second):
 
     # 等待页面跳转
     time.sleep(3)
+
+    # 等待直到可以课程继续学习按钮
+    wait = WebDriverWait(driver, 120)
+    button_keep_learning = wait.until(
+        ec.element_to_be_clickable((By.XPATH, '//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div')))
+    # 等待页面跳转
+    time.sleep(3)
+    button_keep_learning.click()
+    print('点击继续学习按钮')
+
+    driver.close()
 
 
 # 调用登陆函数
