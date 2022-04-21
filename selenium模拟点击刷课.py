@@ -76,40 +76,17 @@ def watch_course(course_num):
     Returns: void
 
     """
-    time.sleep(3)
 
-    # 等待直到可以点击我的课程按键
-    wait = WebDriverWait(driver, 120)
-    button_my_course = wait.until(
-        ec.element_to_be_clickable((By.XPATH, '//*[@id="app"]/section/aside/div/div/ul/li[6]/div')))
-
-    print('点击我的课程按键')
-
-    button_my_course.click()
-
+    # 点击页面上在线课程的课程学习按钮
     # 等待直到可以点击进入学习按钮
     wait = WebDriverWait(driver, 120)
     button_into_course = wait.until(
         ec.element_to_be_clickable(
-            (By.XPATH, '//*[@id="pane-being"]/div/div[3]/table/tbody/tr[' + course_num + ']/td[11]/div/button')))
+            (By.XPATH, '//*[@id="app"]/section/main/div/div[1]/div[1]/div[2]/div/ul/li[' + course_num
+             + ']/div[2]/div[2]/div[2]/button[1]')))
 
     button_into_course.click()
     print('点击进入按键')
-
-    # 等待页面跳转
-    time.sleep(9)
-    print('等待页面跳转')
-
-    # driver.find_element(by=By.XPATH,
-    #                     value='//*[@id="pane-being"]/div/div[3]/table/tbody/tr[1]/td[11]/div/button').click()
-
-    # 点击课程学习按钮
-    driver.find_element(by=By.XPATH, value='//*[@id="app"]/section/aside/div/div/ul/li[4]/div').click()
-    print('点击课程学习按钮')
-
-    # 等待页面跳转
-    time.sleep(6)
-    print('等待页面跳转')
 
     # 看下总共有多少节课程,就循环多少次
     element = WebDriverWait(driver, 120).until(
@@ -134,7 +111,6 @@ def watch_course(course_num):
 
     for i in range(courses_size):
         print('第' + str(i + 1) + '次开始课程学习')
-
         watch_course_loop()
 
 
@@ -188,6 +164,8 @@ def watch_course_loop():
     driver.switch_to.window(driver.window_handles[0])
 
     # 等待页面跳转
+    time.sleep(3)
+
     global delay_time
 
     # 判断是否有视频
@@ -197,14 +175,16 @@ def watch_course_loop():
             # 聚焦下video,更好的获取视频时长.
             # driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
 
-            # 等待直到可以点击视频市按钮
+            # 等待直到可以点击视频时长按钮
             wait = WebDriverWait(driver, 120)
             button_video = wait.until(
                 ec.element_to_be_clickable((By.XPATH, '//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]')))
             button_video.click()
+            print('点击视频时长按钮')
 
             # 点下静音键
             driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button').click()
+            print('点击静音按钮')
 
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
@@ -214,6 +194,7 @@ def watch_course_loop():
                                                          value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
             # 获取视频时长
             video_end_time = t2s(video_end_time_str)
+            print('视频时长:' + str(video_end_time))
 
             # 获取现在已观看时长
             video_time_str = driver.find_element(by=By.XPATH,
@@ -225,43 +206,38 @@ def watch_course_loop():
 
             # 获取现在已观看时长
             video_time = t2s(video_time_str)
+            print('现在已观看时长:' + str(video_time))
 
             delay_time = int(int(video_end_time) - int(video_time)) + 6
 
             print('等待' + str(delay_time) + '秒')
-            # time.sleep(delay_time)
-            WebDriverWait(driver, delay_time)
+            # time.sleep(6)
+            # driver.implicitly_wait(delay_time)
+            # driver.implicitly_wait(6)
             print('正在等待....')
-            # time.sleep(3)
+            time.sleep(delay_time)
+
         else:
             print('获取视频时长获取失败!')
             time.sleep(3)
 
     # 如果是非视频,直接退出学习并确认
-    # 等待直到可以点击退出学习按钮
-    wait = WebDriverWait(driver, 120)
-    button_exit_course = wait.until(
-        ec.element_to_be_clickable(
-            (By.XPATH, '//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[2]/div/div/button')))
+    # 退出学习并确认
+    driver.find_element(by=By.XPATH,
+                        value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[2]/div/div/button').click()
 
-    button_exit_course.click()
+    driver.find_element(by=By.XPATH, value='//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]').click()
 
-    # 等待直到可以点击确认退出学习按钮
-    wait = WebDriverWait(driver, 120)
-    button_exit_course_confirm = wait.until(
-        ec.element_to_be_clickable(
-            (By.XPATH, '//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]')))
+    # 等待页面跳转
+    time.sleep(3)
 
-    button_exit_course_confirm.click()
-
-    # 等待直到可以课程继续学习按钮
-    wait = WebDriverWait(driver, 120)
-    button_keep_learning = wait.until(
-        ec.element_to_be_clickable((By.XPATH, '//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div')))
     # 点击继续学习
-    button_keep_learning.click()
+    driver.find_element(by=By.XPATH,
+                        value='//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div').click()
 
     driver.close()
+    # 等待页面跳转
+    time.sleep(3)
 
 
 # 调用登陆函数
