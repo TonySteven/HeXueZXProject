@@ -29,15 +29,11 @@
 
 mac: 执行 `brew install chromedriver` 即可
 
-#### 2. 安装 python3.8环境(自行百度)
+#### 2. 安装 python3环境(自行百度)
 
-如果环境不是Python3.8,则需自行搭建selenium环境
+##### 2.1 安装selenium
 
-执行 `pip install selenium` 即可
-
-##### 2.1 用项目中venv虚拟环境即可.
-
-![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1gbzstoygj211x0u0jua.jpg)
+执行 `pip install selenium`
 
 #### 3.配置并选择文件运行即可.
 
