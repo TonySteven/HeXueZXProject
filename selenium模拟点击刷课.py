@@ -249,13 +249,20 @@ def click_keep_learn():
     except BaseException as e:
         need_while = True
         print('ValueError:', e)
-        print('刷新页面,重试!')
+        print('等待3秒,刷新页面,重试!')
         while need_while:
             driver.refresh()
             need_while = False
             click_keep_learn()
+            time.sleep(3)
     else:
         print('no error!')
+
+
+def switch_to_window():
+    handles = driver.window_handles
+    for handle in handles:
+        driver.switch_to.window('main')
 
 
 # 调用登陆函数
