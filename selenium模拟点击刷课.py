@@ -6,15 +6,17 @@
 # @File    : selenium模拟点击刷课.py
 
 
-import asyncio
 import datetime
 import time
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
+
+from utils.utils import t2s
 
 # 设置webdriver为chrome
 driver = webdriver.Chrome()
@@ -50,22 +52,6 @@ def login(username, password):
     now = datetime.datetime.now()
     print(now.strftime('%Y-%m-%d %H:%M:%S'))
     print('login success! 登录成功')
-
-
-def t2s(t):
-    """
-
-    Args:
-        t: mm:ss
-
-    Returns: 秒数
-
-    """
-    if ':' in t:
-        m, s = t.strip().split(":")
-        return int(m) * 60 + int(s)
-    else:
-        return ''
 
 
 def watch_course(course_num):
@@ -105,11 +91,10 @@ def watch_course(course_num):
     button_keep_learning.click()
     print('点击继续学习按钮')
 
-    # original_window = driver.current_window_handle
-    # 关闭当前窗口, 只保留一个页面,好操作.
-    driver.close()
+    # driver.close()
+    # 对焦到新页面,并关闭原窗口, 只保留一个页面,好操作.
     # switch_to_new_window(original_window)
-
+    switch_to_newest_window_and_close_original_window()
     for i in range(courses_size):
         print('第' + str(i + 1) + '次开始课程学习')
         watch_course_loop()
@@ -131,7 +116,7 @@ def check_exists_by_tag_name(tag_name):
     return True
 
 
-def switch_to_new_window(original_window):
+def switch_to_newest_window_and_close_original_window():
     """
     切换到新的窗口
     Args:
@@ -139,6 +124,7 @@ def switch_to_new_window(original_window):
     Returns: void
 
     """
+    original_window = driver.current_window_handle
 
     # 等待页面跳转
     wait = WebDriverWait(driver, 9)
@@ -148,6 +134,7 @@ def switch_to_new_window(original_window):
     # Loop through until we find a new window handle
     for window_handle in driver.window_handles:
         if window_handle != original_window:
+            driver.close()
             driver.switch_to.window(window_handle)
             break
     # Wait for the new tab to finish loading content
@@ -161,11 +148,7 @@ def watch_course_loop():
     Returns: void
 
     """
-
-    driver.switch_to.window(driver.window_handles[0])
-
-    # 等待页面跳转
-    time.sleep(3)
+    time.sleep(6)
 
     global delay_time
 
@@ -175,6 +158,13 @@ def watch_course_loop():
 
             # 聚焦下video,更好的获取视频时长.
             # driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
+            # move_to_element(to_element)鼠标移动到指定元素
+            button_mute = driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button')
+            # 点击下静音键
+            ActionChains(driver).move_to_element(button_mute).perform()
+            # 点下静音键
+            button_mute.click()
+            print('点击静音按钮')
 
             # 等待直到可以点击视频时长按钮
             wait = WebDriverWait(driver, 120)
@@ -183,9 +173,7 @@ def watch_course_loop():
             button_video.click()
             print('点击视频时长按钮')
 
-            # 点下静音键
-            driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button').click()
-            print('点击静音按钮')
+
 
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
@@ -209,28 +197,29 @@ def watch_course_loop():
             video_time = t2s(video_time_str)
             print('现在已观看时长:' + str(video_time))
 
-            delay_time = int(int(video_end_time) - int(video_time)) + 6
+            delay_time = int(int(video_end_time) - int(video_time))
 
             print('等待' + str(delay_time) + '秒')
             # time.sleep(6)
             # driver.implicitly_wait(delay_time)
             # driver.implicitly_wait(6)
             print('正在等待....')
-            asyncio.run(delay_exit_leaning(delay_time))
+            delay_exit_leaning(delay_time)
             # time.sleep(3)
         else:
             print('获取视频时长获取失败!')
             time.sleep(3)
 
 
-async def delay_exit_leaning(delay_second):
+def delay_exit_leaning(delay_second):
     """
 
     Returns: void
 
     """
 
-    await asyncio.sleep(delay_second)
+    time.sleep(delay_second)
+    # await asyncio.sleep(delay_second)
 
     # 如果是非视频,直接退出学习并确认
     # 退出学习并确认
@@ -242,16 +231,20 @@ async def delay_exit_leaning(delay_second):
     # 等待页面跳转
     time.sleep(3)
 
-    # 等待直到可以课程继续学习按钮
-    wait = WebDriverWait(driver, 120)
-    button_keep_learning = wait.until(
-        ec.element_to_be_clickable((By.XPATH, '//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div')))
-    # 等待页面跳转
-    time.sleep(3)
-    button_keep_learning.click()
-    print('点击继续学习按钮')
-
-    driver.close()
+    try:
+        # 刷新方法 refresh
+        # driver.refresh()
+        # 等待直到可以课程继续学习按钮
+        wait = WebDriverWait(driver, 120)
+        button_keep_learning = wait.until(
+            ec.element_to_be_clickable((By.XPATH, '//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div')))
+        button_keep_learning.click()
+        print('点击继续学习按钮')
+    except BaseException as e:
+        print('ValueError:', e)
+    else:
+        print('no error!')
+        switch_to_newest_window_and_close_original_window()
 
 
 # 调用登陆函数
