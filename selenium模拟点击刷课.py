@@ -204,7 +204,7 @@ def watch_course_loop():
             # driver.implicitly_wait(delay_time)
             # driver.implicitly_wait(6)
             print('正在等待....')
-            delay_exit_leaning(3)
+            delay_exit_leaning(delay_time)
         else:
             print('获取视频时长获取失败!')
             time.sleep(3)
