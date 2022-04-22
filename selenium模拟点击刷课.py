@@ -127,7 +127,7 @@ def switch_to_newest_window_and_close_original_window():
     original_window = driver.current_window_handle
 
     # 等待页面跳转
-    wait = WebDriverWait(driver, 9)
+    wait = WebDriverWait(driver, 120)
     # Store the ID of the original window
     # Wait for the new window or tab
     wait.until(ec.number_of_windows_to_be(2))
@@ -173,8 +173,6 @@ def watch_course_loop():
             button_video.click()
             print('点击视频时长按钮')
 
-
-
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
             while video_end_time_str == '':
@@ -197,7 +195,7 @@ def watch_course_loop():
             video_time = t2s(video_time_str)
             print('现在已观看时长:' + str(video_time))
 
-            delay_time = int(int(video_end_time) - int(video_time))
+            delay_time = int(int(video_end_time) - int(video_time)) + 6
 
             print('等待' + str(delay_time) + '秒')
             # time.sleep(6)
@@ -235,7 +233,6 @@ def delay_exit_leaning(delay_second):
 
     # 点击继续学习按钮,知道能点击位置
     click_keep_learn()
-    switch_to_newest_window_and_close_original_window()
 
 
 def click_keep_learn():
@@ -246,6 +243,7 @@ def click_keep_learn():
             ec.element_to_be_clickable((By.CLASS_NAME, 'info_list_button')))
         button_keep_learning.click()
         print('点击继续学习按钮')
+        switch_to_newest_window_and_close_original_window()
     except BaseException as e:
         need_while = True
         print('ValueError:', e)
@@ -255,8 +253,6 @@ def click_keep_learn():
             need_while = False
             click_keep_learn()
             time.sleep(3)
-    else:
-        print('no error!')
 
 
 def switch_to_window():
