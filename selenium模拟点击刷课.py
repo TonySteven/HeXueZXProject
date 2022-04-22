@@ -204,7 +204,7 @@ def watch_course_loop():
             # driver.implicitly_wait(delay_time)
             # driver.implicitly_wait(6)
             print('正在等待....')
-            delay_exit_leaning(delay_time)
+            delay_exit_leaning(3)
         else:
             print('获取视频时长获取失败!')
             time.sleep(3)
@@ -228,27 +228,36 @@ def delay_exit_leaning(delay_second):
 
     driver.find_element(by=By.XPATH, value='//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]').click()
 
+    # 刷新方法 refresh
+    # driver.refresh()
     # 等待页面跳转
     time.sleep(3)
 
+    # 点击继续学习按钮,知道能点击位置
+    click_keep_learn()
+    switch_to_newest_window_and_close_original_window()
+
+
+def click_keep_learn():
     try:
-        # 刷新方法 refresh
-        # driver.refresh()
         # 等待直到可以课程继续学习按钮
         wait = WebDriverWait(driver, 120)
         button_keep_learning = wait.until(
-            ec.element_to_be_clickable((By.XPATH, '//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div')))
+            ec.element_to_be_clickable((By.CLASS_NAME, 'info_list_button')))
         button_keep_learning.click()
         print('点击继续学习按钮')
     except BaseException as e:
         print('ValueError:', e)
+        print('刷新页面,重试!')
+        while True:
+            driver.refresh()
+            click_keep_learn()
     else:
         print('no error!')
-        switch_to_newest_window_and_close_original_window()
 
 
 # 调用登陆函数
-login('学号', '密码')
+login('221100901130011', '050211')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
 watch_course('3')
