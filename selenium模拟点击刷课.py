@@ -247,10 +247,12 @@ def click_keep_learn():
         button_keep_learning.click()
         print('点击继续学习按钮')
     except BaseException as e:
+        need_while = True
         print('ValueError:', e)
         print('刷新页面,重试!')
-        while True:
+        while need_while:
             driver.refresh()
+            need_while = False
             click_keep_learn()
     else:
         print('no error!')
