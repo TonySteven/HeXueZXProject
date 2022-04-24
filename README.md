@@ -45,5 +45,13 @@ mac: 执行 `brew install chromedriver` 即可
 
 ![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1gc4gbbjuj20u01nnadb.jpg)
 
+##### 3.3 运行后注意点
+
+需要把浏览器放到激活桌面上,pyCharm可以放到后台.
+
+建议放到桌面并实时查看运行日志(如下图所示),如果发送报错异常,重新运行即可.
+
+![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1kkhejutwj21d40u0n1z.jpg)
+
 
 
