@@ -206,6 +206,8 @@ def watch_course_loop():
         else:
             print('获取视频时长获取失败!')
             time.sleep(3)
+    else:
+        delay_exit_leaning(3)
 
 
 def delay_exit_leaning(delay_second):
@@ -262,10 +264,10 @@ def switch_to_window():
 
 
 # 调用登陆函数
-login('学号', '密码')
+login('221100901130011', '050211')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
-watch_course('4')
+watch_course('1')
 
 # 关闭浏览器
 print('======完成刷课=======')
