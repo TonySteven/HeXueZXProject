@@ -255,7 +255,7 @@ def switch_to_window():
 
 
 # 调用登陆函数
-login('username', 'password')
+login('221100901130011', '050211')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
 watch_course('1')
