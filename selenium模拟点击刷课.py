@@ -7,6 +7,7 @@
 
 
 import datetime
+import logging
 import time
 
 from selenium import webdriver
@@ -64,8 +65,7 @@ def watch_course(course_num):
 
     """
 
-    # 点击页面上在线课程的课程学习按钮
-    # 等待直到可以点击进入学习按钮
+    # 点击页面上在线课程的课程学习按钮,等待直到可以点击进入学习按钮
     wait = WebDriverWait(driver, 120)
     button_into_course = wait.until(
         ec.element_to_be_clickable(
@@ -75,13 +75,8 @@ def watch_course(course_num):
     button_into_course.click()
     print('点击进入按键')
 
-    # 看下总共有多少节课程,就循环多少次
-    element = WebDriverWait(driver, 120).until(
-        ec.presence_of_element_located((By.CLASS_NAME, "collapse_content_box"))
-    )
     courses_size = len(driver.find_elements(by=By.CLASS_NAME, value='collapse_content_box'))
     print('总课程数:' + str(courses_size))
-    # courses_size = len(driver.find_element(by=By.LINK_TEXT, value='视频').size)
 
     # 等待直到可以课程继续学习按钮
     wait = WebDriverWait(driver, 120)
@@ -150,11 +145,14 @@ def watch_course_loop():
     """
     time.sleep(6)
 
-    global delay_time
+    # 创建一个全局变量,用来记录视频播放的时间
+    global video_time
 
     # 判断是否有视频
     if check_exists_by_tag_name('video'):
-        if check_exists_by_xpath('//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]'):
+        print('有视频,准备播放视频')
+        button_video_string = '//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]'
+        if check_exists_by_xpath(button_video_string):
 
             # 聚焦下video,更好的获取视频时长.
             # driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
@@ -169,12 +167,12 @@ def watch_course_loop():
             # 等待直到可以点击视频时长按钮
             wait = WebDriverWait(driver, 120)
             button_video = wait.until(
-                ec.element_to_be_clickable((By.XPATH, '//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]')))
+                ec.element_to_be_clickable((By.XPATH, button_video_string)))
             button_video.click()
             print('点击视频时长按钮')
 
             video_end_time_str = driver.find_element(by=By.XPATH,
-                                                     value='//*[@id="vjs_video_3"]/div[4]/div[4]/span[2]').text
+                                                     value=button_video_string).text
             while video_end_time_str == '':
                 time.sleep(3)
                 video_end_time_str = driver.find_element(by=By.XPATH,
@@ -198,9 +196,7 @@ def watch_course_loop():
             delay_time = int(int(video_end_time) - int(video_time)) + 6
 
             print('等待' + str(delay_time) + '秒')
-            # time.sleep(6)
-            # driver.implicitly_wait(delay_time)
-            # driver.implicitly_wait(6)
+
             print('正在等待....')
             delay_exit_leaning(delay_time)
         else:
@@ -221,11 +217,11 @@ def delay_exit_leaning(delay_second):
     print('等待完成....')
     # await asyncio.sleep(delay_second)
 
-    # 如果是非视频,直接退出学习并确认
-    # 退出学习并确认
+    # 如果是非视频,直接退出学习并确认,退出学习并确认.
     driver.find_element(by=By.XPATH,
-                        value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[2]/div/div/button').click()
+                        value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[1]/div/div/button').click()
 
+    # 点击确定按钮.
     driver.find_element(by=By.XPATH, value='//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]').click()
 
     # 刷新方法 refresh
@@ -247,24 +243,19 @@ def click_keep_learn():
         print('点击继续学习按钮')
         switch_to_newest_window_and_close_original_window()
     except BaseException as e:
-        need_while = True
-        print('ValueError:', e)
-        print('等待3秒,刷新页面,重试!')
-        while need_while:
-            driver.refresh()
-            need_while = False
-            click_keep_learn()
-            time.sleep(3)
+        # clean-up
+        logging.exception('找不到继续学习按钮')
+        raise e
 
 
 def switch_to_window():
     handles = driver.window_handles
-    for handle in handles:
+    for _ in handles:
         driver.switch_to.window('main')
 
 
 # 调用登陆函数
-login('学号', '密码')
+login('username', 'password')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
 watch_course('1')
