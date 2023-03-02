@@ -35,6 +35,16 @@ mac: 执行 `brew install chromedriver` 即可
 
 执行 `pip install selenium`
 
+```shell
+
+# pip更新所有包
+pip install -r requirements.txt --upgrade
+
+# 更新本地selenium
+brew update chromedriver
+
+```
+
 #### 3.配置并选择文件运行即可.
 
 ##### 3.1 配置
