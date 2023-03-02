@@ -16,7 +16,13 @@ def t2s(t):
 
     """
     if ':' in t:
-        m, s = t.strip().split(":")
-        return int(m) * 60 + int(s)
+        # 有时候会出现 00:00:00 这种情况
+        # 判断冒号的个数,如果是2个,则是时分秒,如果是1个,则是分秒
+        if t.count(':') == 2:
+            h, m, s = t.strip().split(":")
+            return int(h) * 3600 + int(m) * 60 + int(s)
+        elif t.count(':') == 1:
+            m, s = t.strip().split(":")
+            return int(m) * 60 + int(s)
     else:
         return ''
