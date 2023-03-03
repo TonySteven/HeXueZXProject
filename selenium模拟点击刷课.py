@@ -75,21 +75,16 @@ def watch_course(course_num):
     button_into_course.click()
     print('点击进入按键')
 
-    courses_size = len(driver.find_elements(by=By.CLASS_NAME, value='collapse_content_box'))
+    courses_size = len(driver.find_elements(by=By.CLASS_NAME, value='el-collapse'))
     print('总课程数:' + str(courses_size))
 
-    # 等待直到可以课程继续学习按钮
-    wait = WebDriverWait(driver, 120)
-    button_keep_learning = wait.until(
-        ec.element_to_be_clickable((By.XPATH, '//*[@id="study_content"]/div[2]/div/div[2]/div[2]/div[1]/div')))
-
-    button_keep_learning.click()
+    click_keep_learn()
     print('点击继续学习按钮')
 
     # driver.close()
     # 对焦到新页面,并关闭原窗口, 只保留一个页面,好操作.
     # switch_to_new_window(original_window)
-    switch_to_newest_window_and_close_original_window()
+    # switch_to_newest_window_and_close_original_window()
     for i in range(courses_size):
         print('第' + str(i + 1) + '次开始课程学习')
         watch_course_loop()
