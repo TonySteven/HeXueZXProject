@@ -4,8 +4,6 @@
 # @Author  : StevenL
 # @Email   : stevenl365404@gmail.com
 # @File    : selenium模拟点击刷课.py
-
-
 import datetime
 import logging
 import time
@@ -14,6 +12,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -75,9 +74,6 @@ def watch_course(course_num):
     button_into_course.click()
     print('点击进入按键')
 
-    courses_size = len(driver.find_elements(by=By.CLASS_NAME, value='el-collapse'))
-    print('总课程数:' + str(courses_size))
-
     click_keep_learn()
     print('点击继续学习按钮')
 
@@ -85,8 +81,9 @@ def watch_course(course_num):
     # 对焦到新页面,并关闭原窗口, 只保留一个页面,好操作.
     # switch_to_new_window(original_window)
     # switch_to_newest_window_and_close_original_window()
-    for i in range(courses_size):
-        print('第' + str(i + 1) + '次开始课程学习')
+    # for i in range(courses_size):
+    # 无限循环,直到手动关闭
+    while True:
         watch_course_loop()
 
 
@@ -152,19 +149,27 @@ def watch_course_loop():
             # 聚焦下video,更好的获取视频时长.
             # driver.switch_to.frame(driver.find_element(by=By.TAG_NAME, value='video'))
             # move_to_element(to_element)鼠标移动到指定元素
-            button_mute = driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button')
-            # 点击下静音键
-            ActionChains(driver).move_to_element(button_mute).perform()
-            # 点下静音键
-            button_mute.click()
-            print('点击静音按钮')
+
+            element_mute = WebDriverWait(driver, 20, 0.5).until(
+                EC.visibility_of_all_elements_located(
+                    (By.XPATH, '//*[@id="vjs_video_3"]/div[4]/div[1]/button'))
+            )
+            if element_mute:
+                button_mute = driver.find_element(by=By.XPATH, value='//*[@id="vjs_video_3"]/div[4]/div[1]/button')
+                # 点击下静音键
+                ActionChains(driver).move_to_element(button_mute).perform()
+                # 点下静音键
+                button_mute.click()
+                print('点击静音按钮')
 
             # 等待直到可以点击视频时长按钮
-            wait = WebDriverWait(driver, 120)
-            button_video = wait.until(
-                ec.element_to_be_clickable((By.XPATH, button_video_string)))
-            button_video.click()
-            print('点击视频时长按钮')
+            element_watch = WebDriverWait(driver, 20, 0.5).until(
+                EC.visibility_of_all_elements_located(
+                    (By.XPATH, button_video_string))
+            )
+            if element_watch:
+                driver.find_element(by=By.XPATH, value=button_video_string).click()
+                print('点击视频时长按钮')
 
             video_end_time_str = driver.find_element(by=By.XPATH,
                                                      value=button_video_string).text
@@ -193,6 +198,7 @@ def watch_course_loop():
             print('等待' + str(delay_time) + '秒')
 
             print('正在等待....')
+            # 等待视频播放完毕,并找到视频按钮
             delay_exit_leaning(delay_time)
         else:
             print('获取视频时长获取失败!')
@@ -207,17 +213,31 @@ def delay_exit_leaning(delay_second):
     Returns: void
 
     """
-
+    # 等待delay_second秒数
     time.sleep(delay_second)
-    print('等待完成....')
-    # await asyncio.sleep(delay_second)
+    # 查看sleep是否结束
+    print('等待完成....' + str(delay_second) + '秒')
 
-    # 如果是非视频,直接退出学习并确认,退出学习并确认.
-    driver.find_element(by=By.XPATH,
-                        value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[1]/div/div/button').click()
+    # # 如果是非视频,直接退出学习并确认,退出学习并确认.
+    # driver.find_element(by=By.XPATH,
+    #                     value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[1]/div/div/button').click()
+    # 20秒内，直到元素在页面中可定位，点击元素,否则抛出异常.
+    element_exit = WebDriverWait(driver, 20, 0.5).until(
+        EC.visibility_of_all_elements_located(
+            (By.XPATH, '//*[@class="outButton"]/button'))
+    )
+    if element_exit:
+        driver.find_element(by=By.XPATH,
+                            value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[1]/div/div/button').click()
 
     # 点击确定按钮.
-    driver.find_element(by=By.XPATH, value='//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]').click()
+    element_yes = WebDriverWait(driver, 20, 0.5).until(
+        EC.visibility_of_all_elements_located(
+            (By.XPATH, '//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]'))
+    )
+    if element_yes:
+        driver.find_element(by=By.XPATH,
+                            value='//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]').click()
 
     # 刷新方法 refresh
     # driver.refresh()
@@ -231,12 +251,17 @@ def delay_exit_leaning(delay_second):
 def click_keep_learn():
     try:
         # 等待直到可以课程继续学习按钮
-        wait = WebDriverWait(driver, 120)
-        button_keep_learning = wait.until(
-            ec.element_to_be_clickable((By.CLASS_NAME, 'info_list_button')))
-        button_keep_learning.click()
-        print('点击继续学习按钮')
-        switch_to_newest_window_and_close_original_window()
+
+        element_keep_learn = WebDriverWait(driver, 20, 0.5).until(
+            EC.visibility_of_all_elements_located(
+                (By.CLASS_NAME, 'info_list_button'))
+        )
+        if element_keep_learn:
+            # 点击继续学习按钮
+            driver.find_element(by=By.CLASS_NAME,
+                                value='info_list_button').click()
+            print('点击继续学习按钮')
+            switch_to_newest_window_and_close_original_window()
     except BaseException as e:
         # clean-up
         logging.exception('找不到继续学习按钮')
