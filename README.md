@@ -41,7 +41,7 @@ mac: 执行 `brew install chromedriver` 即可
 pip install -r requirements.txt --upgrade
 
 # 更新本地selenium
-brew update chromedriver
+brew upgrade chromedriver
 
 ```
 
