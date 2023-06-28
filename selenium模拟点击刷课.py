@@ -12,7 +12,6 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -125,7 +124,7 @@ def switch_to_newest_window_and_close_original_window():
             driver.switch_to.window(window_handle)
             break
     # Wait for the new tab to finish loading content
-    # wait.until(EC.title_is("SeleniumHQ Browser Automation"))
+    # wait.until(ec.title_is("SeleniumHQ Browser Automation"))
     # driver.switch_to.window('main')
 
 
@@ -151,7 +150,7 @@ def watch_course_loop():
             # move_to_element(to_element)鼠标移动到指定元素
 
             element_mute = WebDriverWait(driver, 20, 0.5).until(
-                EC.visibility_of_all_elements_located(
+                ec.visibility_of_all_elements_located(
                     (By.XPATH, '//*[@id="vjs_video_3"]/div[4]/div[1]/button'))
             )
             if element_mute:
@@ -164,7 +163,7 @@ def watch_course_loop():
 
             # 等待直到可以点击视频时长按钮
             element_watch = WebDriverWait(driver, 20, 0.5).until(
-                EC.visibility_of_all_elements_located(
+                ec.visibility_of_all_elements_located(
                     (By.XPATH, button_video_string))
             )
             if element_watch:
@@ -223,7 +222,7 @@ def delay_exit_leaning(delay_second):
     #                     value='//*[@id="app"]/section/main/div/div[1]/div/div[1]/div/div[1]/div/div/button').click()
     # 20秒内，直到元素在页面中可定位，点击元素,否则抛出异常.
     element_exit = WebDriverWait(driver, 20, 0.5).until(
-        EC.visibility_of_all_elements_located(
+        ec.visibility_of_all_elements_located(
             (By.XPATH, '//*[@class="outButton"]/button'))
     )
     if element_exit:
@@ -232,7 +231,7 @@ def delay_exit_leaning(delay_second):
 
     # 点击确定按钮.
     element_yes = WebDriverWait(driver, 20, 0.5).until(
-        EC.visibility_of_all_elements_located(
+        ec.visibility_of_all_elements_located(
             (By.XPATH, '//*[@id="app"]/section/main/div/div[2]/div/div[3]/span/button[2]'))
     )
     if element_yes:
@@ -253,7 +252,7 @@ def click_keep_learn():
         # 等待直到可以课程继续学习按钮
 
         element_keep_learn = WebDriverWait(driver, 20, 0.5).until(
-            EC.visibility_of_all_elements_located(
+            ec.visibility_of_all_elements_located(
                 (By.CLASS_NAME, 'info_list_button'))
         )
         if element_keep_learn:
@@ -275,10 +274,10 @@ def switch_to_window():
 
 
 # 调用登陆函数
-login('221100901130011', '050211')
+login('xxxxxxxxxxxx', 'xxxxxxxx')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
-watch_course('1')
+watch_course('3')
 
 # 关闭浏览器
 print('======完成刷课=======')
