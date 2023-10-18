@@ -1,4 +1,4 @@
-# 和学在线自动刷课项目
+**# 和学在线自动刷课项目
 
 ## 简介
 
@@ -43,6 +43,11 @@ pip install -r requirements.txt --upgrade
 # 更新本地selenium
 brew upgrade chromedriver
 
+# 如果还是报版本错误,可以去官网下载最新版本,替换本地的chromedriver
+https://chromedriver.chromium.org/downloads
+# 114版本以后的chromedriver需要下载对应的chrome浏览器,否则会报错.
+https://googlechromelabs.github.io/chrome-for-testing/
+
 ```
 
 #### 3.配置并选择文件运行即可.
@@ -61,7 +66,7 @@ brew upgrade chromedriver
 
 建议放到桌面并实时查看运行日志(如下图所示),如果发送报错异常,重新运行即可.
 
-![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1kkhejutwj21d40u0n1z.jpg)
+![](https://tva1.sinaimg.cn/large/e6c9d24ely1h1kkhejutwj21d40u0n1z.jpg)**
 
 
 
