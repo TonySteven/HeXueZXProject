@@ -18,7 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from utils.utils import t2s
 
 # 设置webdriver为chrome
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(executable_path="/Users/steven/chromedriver-mac-arm64/chromedriver")
 
 
 def login(username, password):
@@ -274,10 +274,10 @@ def switch_to_window():
 
 
 # 调用登陆函数
-login('xxxxxxxxxxxx', 'xxxxxxxx')
+login('username', 'password')
 
 # 调用看课函数,跳转到课程观看页面,先看第一门课程
-watch_course('3')
+watch_course('1')
 
 # 关闭浏览器
 print('======完成刷课=======')
